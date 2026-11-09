@@ -12,13 +12,13 @@
 @base <http://www.w3id.org/hsu-aut/RobotCapabilities#> .
 
 <http://www.w3id.org/hsu-aut/RobotCapabilities> rdf:type owl:Ontology ;
-    owl:versionIRI <http://www.w3id.org/hsu-aut/RobotCapabilities/2.0.1> ;
-    owl:versionInfo "2.0.1" ;
+    owl:versionIRI <http://www.w3id.org/hsu-aut/RobotCapabilities/2.0.2> ;
+    owl:versionInfo "2.0.2" ;
     rdfs:label "RobotCapabilities"@en ;
     dcterms:title "RobotCapabilities - Basic Types of Capabilities of Autonomous Robots"@en ;
     dcterms:description """A small, deliberately shallow taxonomy of the basic kinds of capability an autonomous robot can provide, as types of RobotCapability. The pattern imports nothing: an ontology that uses it places RobotCapability under its own notion of capability with a single axiom.
 
-The cut is not newly invented. It is taken from twelve independent groupings that make the same distinction, among them IEEE 1872 (which types robot parts as sensing, actuating, processing and communicating), IEEE 1872.2 clause 4.4.9 (which gives acquisition of information, physical modification of objects and object classification as examples of functions), the published ontologies SRDL and SOMA, ISO 8373:2021 clause 3.1, SAE JAUS, ASTM F3470-20 and the SPARC Multi-Annual Roadmap. Correspondences to SRDL and SOMA are recorded on each class.
+The cut is not newly invented. It is taken from twelve groupings that make the same distinctions, among them the published ontologies SRDL and SOMA, ISO 8373:2021, SAE JAUS, ASTM F3470-20, ASTM E54.09, Messina 2006, ASyMTRe and the SPARC Multi-Annual Roadmap. Of these, at most nine are independent lines: SOMA and SRDL share a research group, and Messina 2006 and the ASTM E54.09 standards share one. The starting point of the pattern, IEEE 1872 and IEEE 1872.2 clause 4.4.9, is not among the twelve. Correspondences to SRDL or SOMA are recorded on most, not on all classes. The types are chosen because the sources agree on them, not because a requirement demands each one.
 
 There is no standard that fixes a taxonomy of capabilities of autonomous robots. IDTA 02020 (Capability Description for the Asset Administration Shell) refers to external ontologies for capability types and states that such ontologies are "not yet widely available"; this pattern is meant to be usable there."""@en ;
     dcterms:creator "Luis Miguel Vieira da Silva" ;
@@ -128,7 +128,7 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
 :ProprioceptionCapability rdf:type owl:Class ;
     rdfs:subClassOf :PerceptionCapability ;
     rdfs:label "proprioception capability"@en ;
-    rdfs:comment "Perception directed at the robot's own state rather than at its environment. Kept apart because the distinction matters in planning: being able to sense the environment is not the same as knowing one's own pose. SAE JAUS assigns pose sensing to mobility rather than to environment sensing, and SOMA separates Proprioceiving from Perceiving."@en ;
+    rdfs:comment "Perception directed at the robot's own internal state rather than at its environment: joint positions, actuator states, battery level. ISO 8373:2021, 8.10 defines a proprioceptive sensor as one that measures the internal state of a robot, and SOMA reads Proprioceiving as gathering sensor information about itself as opposed to about its surroundings. Knowing one's own pose in a map is not this but localization (ISO 8373:2021, 8.2), which combines perception and reasoning. Placed under perception following ISO 8373:2021, clause 8, which groups proprioceptive and exteroceptive sensing under sensing, and SPARC 4.7.3.5, which puts self location perception under perception ability; note that SOMA makes Proprioceiving a sibling of Perceiving rather than a subclass."@en ;
     skos:relatedMatch SOMA:Proprioceiving .
 
 
@@ -145,16 +145,16 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
 :ManipulationCapability rdf:type owl:Class ;
     rdfs:subClassOf :RobotCapability ;
     rdfs:label "manipulation capability"@en ;
-    rdfs:comment "The specification of a function that changes the location or the state of an object other than the robot itself. Corresponds to the physical modification of objects via force exertion in IEEE 1872.2, 4.4.9, and to robotActuatingPart in IEEE 1872 RPARTS."@en ;
+    rdfs:comment "The specification of a function that changes the location or the state of an object other than the robot itself, including carrying it. Corresponds to the physical modification of objects via force exertion in IEEE 1872.2, 4.4.9, and to robotActuatingPart in IEEE 1872 RPARTS. Of the two SOMA tasks named, Actuating is the closer one -- SOMA reads it as moving an object, while Manipulating is about moving the prehensile effectors."@en ;
     skos:closeMatch SRDL:ObjectManipulationCapability ;
-    skos:relatedMatch SOMA:Manipulating .
+    skos:relatedMatch SOMA:Actuating , SOMA:Manipulating .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#PositioningCapability
 :PositioningCapability rdf:type owl:Class ;
     rdfs:subClassOf :ManipulationCapability ;
     rdfs:label "positioning capability"@en ;
-    rdfs:comment "Bringing an object into a defined position and orientation. ISO 8373:2021, 3.1 names positioning next to locomotion and manipulation; SOMA places Positioning under Actuating."@en ;
+    rdfs:comment "Bringing an object into a defined position and orientation. ISO 8373:2021, 3.1 names positioning next to locomotion and manipulation, in the definition of a robot, but nowhere defines the term; the reading used here follows SOMA, which defines Positioning as placing an object at a particular position and puts it under Actuating. It is a subtype of manipulation here because manipulation is read in the sense of SOMA Actuating. A model that follows the triple of ISO 8373:2021, 3.1 would make it a sibling instead."@en ;
     skos:relatedMatch SOMA:Positioning .
 
 
@@ -162,7 +162,7 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
 :ReasoningCapability rdf:type owl:Class ;
     rdfs:subClassOf :RobotCapability ;
     rdfs:label "reasoning capability"@en ;
-    rdfs:comment "The specification of a function that derives new information from information already present - classifying, planning, deciding. Corresponds to object classification via reasoning behavior in IEEE 1872.2, 4.4.9, and to robotProcessingPart in IEEE 1872 RPARTS. CSS admits this as a capability because it defines the effect of a capability as being in the physical OR VIRTUAL world. Note that this type is absent from groupings rooted in manufacturing, where planning happens outside the machine; it is needed for autonomous robots, which decide for themselves."@en ;
+    rdfs:comment "The specification of a function that derives new information from information already present - classifying, planning, deciding. Corresponds to object classification via reasoning behavior in IEEE 1872.2, 4.4.9, and to robotProcessingPart in IEEE 1872 RPARTS. CSS admits this as a capability because it defines the effect of a capability as being in the physical OR VIRTUAL world. Note that this type is absent from groupings rooted in manufacturing, where planning happens outside the machine; it is needed for autonomous robots, which decide for themselves. Supported by SPARC, which names cognitive ability and decisional autonomy at the top level, and by SRDL ComputationalCapability; in SOMA the corresponding task sits under InformationAcquisition rather than at the top. The weakest supported of the nine types."@en ;
     skos:closeMatch SRDL:ComputationalCapability ;
     skos:relatedMatch SOMA:DerivingInformation .
 
@@ -179,7 +179,7 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
 :HumanRobotCommunicationCapability rdf:type owl:Class ;
     rdfs:subClassOf :CommunicationCapability ;
     rdfs:label "human-robot communication capability"@en ;
-    rdfs:comment "Communication with a human. The distinction by partner is taken from IEEE 1872 CORAX rather than newly introduced; this class specifies a function whose execution is a CORAX:HumanRobotCommunication."@en ;
+    rdfs:comment "Communication with a human. The distinction by partner is taken from IEEE 1872 CORAX rather than newly introduced; this class specifies a function whose execution is a CORAX:HumanRobotCommunication. The division by partner follows SPARC 4.3.2 and the separate terms of ISO 8373:2021, 3.14 and 3.15; CORAX types the communication events rather than the capability."@en ;
     rdfs:seeAlso CORAX:HumanRobotCommunication .
 
 
