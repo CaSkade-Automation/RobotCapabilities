@@ -35,19 +35,33 @@ RobotCapability
       └── RobotRobotCommunicationCapability
 ```
 
-*A class diagram of the pattern is to be added.*
+Figure 1 shows the same taxonomy as a UML class diagram; hollow triangles denote
+subclass relations. The types are not disjoint, and the correspondences to SOMA,
+SRDL and IEEE 1872 are annotations, so neither appears in the figure.
+
+<p align="center">
+<img src="pictures/robotcapabilities.png" width="380" title="Class diagram of RobotCapabilities">
+</p>
+
+Figure 1: Class diagram of RobotCapabilities (editable source: [`pictures/robotcapabilities.drawio`](pictures/robotcapabilities.drawio), open with [draw.io](https://www.drawio.com))
 
 ## The cut is taken, not invented
 
-The division is not a new proposal. Twelve independent groupings make the same
-distinction; perception, locomotion and manipulation appear in nearly all of
-them, reasoning in five, communication in six.
+The division is not a new proposal. Twelve groupings make the same
+distinctions: locomotion appears in all of them, perception in eleven,
+manipulation in ten, reasoning in six and communication in eight. They are not
+twelve independent lines, though. SOMA and SRDL come from the same research
+group, and Messina 2006 is the basis of the ASTM E54.09 standards, so at most
+nine lines are independent. In that NIST line, communication means the radio
+link rather than the exchange of information.
+
+The starting point of the pattern, IEEE 1872 (part types `robotSensingPart`,
+`robotActuatingPart`, `robotProcessingPart`, `robotCommunicatingPart`) and
+IEEE 1872.2 clause 4.4.9 (function examples), is not counted among the twelve.
 
 | Source | Perception | Locomotion | Manipulation | Reasoning | Communication |
 |---|---|---|---|---|---|
-| IEEE 1872 RPARTS (part types) | `robotSensingPart` | `robotActuatingPart` | `robotActuatingPart` | `robotProcessingPart` | `robotCommunicatingPart` |
-| IEEE 1872.2, 4.4.9 (function examples) | acquisition of information | — | physical modification | object classification | — |
-| SOMA (ontology) | `Perceiving` | `Navigating` | `Manipulating` | `DerivingInformation` | `CommunicationTask` |
+| SOMA (ontology) | `Perceiving` | `Navigating` | `Actuating`, `Manipulating` | `DerivingInformation` | `CommunicationTask` |
 | SRDL (ontology) | `PerceptionCapability` | `LocomotionCapability` | `ObjectManipulationCapability` | `ComputationalCapability` | — |
 | Tiddi et al. 2017 (bottom-up from ROS) | Sensing | Movement | Movement | RobotKnowledge | — |
 | ISO 8373:2021, 3.1 | — | locomotion | manipulation, positioning | — | — |
@@ -57,6 +71,8 @@ them, reasoning in five, communication in six.
 | ASTM F3470-20 (A-UGV) | Localization | Goal Navigation, Docking | — | — | Fleet coordination |
 | Zager et al. 2024 | Observe/Orient | Act: Locomotion | Act: Manipulation | Decide | Act: Communication |
 | Paul & Nof 1979 (RTM) | sensing | actuation, positioning | actuation | decision making | — |
+| Messina 2006 | Sensing | Mobility | — | — | Communications |
+| ASyMTRe, Tang & Parker 2005 | perceptual schemas | motor schemas | motor schemas | — | communication schemas |
 
 ## Three different notions of "capability"
 
@@ -70,10 +86,18 @@ difference matters when these models are compared or combined:
 | **ROSETTA, PMK** | a **property** of a skill or of the robot |
 
 A specification is not a disposition: the specification "transport" exists
-whether or not any robot has the disposition to carry it out. The classes here
-are therefore related to their SRDL and SOMA counterparts by `skos:closeMatch`
-and deliberately **not** by `owl:equivalentClass` — equating them would make
-every capability in this stack a disposition.
+whether or not any robot has the disposition to carry it out. The
+correspondences are therefore SKOS annotations and deliberately **not**
+`owl:equivalentClass` — equating them would make every capability in this stack
+a disposition. They say which kind of thing they point at:
+
+- `skos:closeMatch` to `SRDL:Capability` and `SOMA:Capability` (the root) and to
+  the four SRDL capability classes — dispositions, the same kind of thing with a
+  different ontological commitment;
+- `skos:relatedMatch` to the SOMA task types (`Perceiving`, `Navigating`,
+  `Actuating`, `Manipulating`, `Positioning`, `DerivingInformation`,
+  `CommunicationTask`, `Proprioceiving`) — activities a capability specifies,
+  related but not interchangeable.
 
 Note that `http://knowrob.org/kb/srdl2-cap.owl` identifies the SRDL terms but
 does not dereference to RDF; the mappings name the terms without being able to
@@ -112,7 +136,7 @@ Import a fixed version:
 
 ```turtle
 <http://example.org/my-ontology> rdf:type owl:Ontology ;
-    owl:imports <http://www.w3id.org/hsu-aut/RobotCapabilities/1.0.0> .
+    owl:imports <http://www.w3id.org/hsu-aut/RobotCapabilities/2.0.2> .
 ```
 
 The pattern imports nothing. The correspondences to SOMA, SRDL and
