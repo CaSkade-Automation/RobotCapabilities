@@ -12,8 +12,8 @@
 @base <http://www.w3id.org/hsu-aut/RobotCapabilities#> .
 
 <http://www.w3id.org/hsu-aut/RobotCapabilities> rdf:type owl:Ontology ;
-    owl:versionIRI <http://www.w3id.org/hsu-aut/RobotCapabilities/2.0.0> ;
-    owl:versionInfo "2.0.0" ;
+    owl:versionIRI <http://www.w3id.org/hsu-aut/RobotCapabilities/2.0.1> ;
+    owl:versionInfo "2.0.1" ;
     rdfs:label "RobotCapabilities"@en ;
     dcterms:title "RobotCapabilities - Basic Types of Capabilities of Autonomous Robots"@en ;
     dcterms:description """A small, deliberately shallow taxonomy of the basic kinds of capability an autonomous robot can provide, as types of RobotCapability. The pattern imports nothing: an ontology that uses it places RobotCapability under its own notion of capability with a single axiom.
@@ -53,6 +53,9 @@ vann:preferredNamespaceUri rdf:type owl:AnnotationProperty .
 
 # Used without importing SKOS: the mappings are annotations, and pulling the
 # whole SKOS vocabulary into every importing ontology is not worth it.
+skos:relatedMatch rdf:type owl:AnnotationProperty ;
+                  rdfs:comment "Used here in its SKOS sense: the two concepts are associated but not interchangeable. Used for the correspondences to the task types of SOMA, which name the activity a capability specifies rather than the capability itself."@en .
+
 skos:closeMatch rdf:type owl:AnnotationProperty ;
                 rdfs:comment "Used here in its SKOS sense: the two concepts are similar enough to be interchanged in some applications, but not identical. They are not equivalent classes - see the note on the three notions of capability below."@en .
 
@@ -63,10 +66,26 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
 #
 #    The classes below are types of :RobotCapability, read as a specification
 #    of what a robot can do -- the sense the CSS reference model gives the word,
-#    "implementation-independent specification of a function". SOMA and SRDL use
-#    the word for something else: a disposition of an agent to bring about
-#    certain effects. ROSETTA and PMK use it for a property of a skill or of
-#    the robot.
+#    "implementation-independent specification of a function".
+#
+#    Other vocabularies use the word differently, and the correspondences below
+#    say which kind of thing they point at:
+#
+#      SRDL:Capability    a disposition: "the special type of disposition of an
+#                         agent which makes it able to perform certain tasks".
+#                         Same kind of thing as a capability here, different
+#                         ontological commitment -- hence skos:closeMatch.
+#      SOMA:Capability    a disposition as well (SOMA:Disposition).
+#      SOMA task types    Perceiving, Navigating, Manipulating and the others
+#                         are SOMA:Task, not dispositions: they name the
+#                         *activity* a capability specifies. Related but not
+#                         interchangeable -- hence skos:relatedMatch.
+#      ROSETTA, PMK       a property of a skill or of the robot.
+#
+#    A capability in the sense used here exists without a bearer: a required
+#    capability is one a process needs, whether or not any resource offers it.
+#    A disposition inheres in its bearer and does not. That is the difference
+#    that keeps these correspondences from being equivalences.
 #
 #    A specification is not a disposition. The specification "transport"
 #    exists whether or not any robot has the disposition to carry it out.
@@ -91,7 +110,9 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
 # ontology, not here.
 :RobotCapability rdf:type owl:Class ;
     rdfs:label "robot capability"@en ;
-    rdfs:comment "A capability an autonomous robot can provide. Root of this pattern; the nine types below divide it by what the robot does, not by how it is built."@en .
+    skos:closeMatch SRDL:Capability , SOMA:Capability ;
+    rdfs:isDefinedBy <https://raw.githubusercontent.com/knowrob/knowrob/dev/owl/srdl2-cap.owl> ;
+    rdfs:comment "A capability an autonomous robot can provide. Root of this pattern; the nine types below divide it by what the robot does, not by how it is built. The two correspondences point at the classes that play this role in SOMA and SRDL, both of which read a capability as a disposition of the agent rather than as a specification. SRDL is identified by http://knowrob.org/kb/srdl2-cap.owl, which no longer dereferences; the file is kept in github.com/knowrob/knowrob under owl/srdl2-cap.owl, commit 3ce4c464ea28f5499f46378b7cd44a002ece0052 at the time of writing."@en .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#PerceptionCapability
@@ -99,7 +120,8 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
     rdfs:subClassOf :RobotCapability ;
     rdfs:label "perception capability"@en ;
     rdfs:comment "The specification of a function that acquires information about the environment or about the robot itself. Corresponds to what IEEE 1872.2, 4.4.9 calls the acquisition of information via sensing behavior, and to what IEEE 1872 RPARTS covers with robotSensingPart."@en ;
-    skos:closeMatch SOMA:Perceiving , SRDL:PerceptionCapability .
+    skos:closeMatch SRDL:PerceptionCapability ;
+    skos:relatedMatch SOMA:Perceiving .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#ProprioceptionCapability
@@ -107,7 +129,7 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
     rdfs:subClassOf :PerceptionCapability ;
     rdfs:label "proprioception capability"@en ;
     rdfs:comment "Perception directed at the robot's own state rather than at its environment. Kept apart because the distinction matters in planning: being able to sense the environment is not the same as knowing one's own pose. SAE JAUS assigns pose sensing to mobility rather than to environment sensing, and SOMA separates Proprioceiving from Perceiving."@en ;
-    skos:closeMatch SOMA:Proprioceiving .
+    skos:relatedMatch SOMA:Proprioceiving .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#LocomotionCapability
@@ -115,7 +137,8 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
     rdfs:subClassOf :RobotCapability ;
     rdfs:label "locomotion capability"@en ;
     rdfs:comment "The specification of a function that changes the location of the robot itself. The constitutive capability of a mobile robot. Present in every grouping examined, and named in ISO 8373:2021, 3.1 alongside manipulation and positioning. The modality - air, ground, water - is deliberately not modelled here; it belongs to the platform of the robot, and modelling it twice would be an error."@en ;
-    skos:closeMatch SOMA:Navigating , SRDL:LocomotionCapability .
+    skos:closeMatch SRDL:LocomotionCapability ;
+    skos:relatedMatch SOMA:Navigating .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#ManipulationCapability
@@ -123,7 +146,8 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
     rdfs:subClassOf :RobotCapability ;
     rdfs:label "manipulation capability"@en ;
     rdfs:comment "The specification of a function that changes the location or the state of an object other than the robot itself. Corresponds to the physical modification of objects via force exertion in IEEE 1872.2, 4.4.9, and to robotActuatingPart in IEEE 1872 RPARTS."@en ;
-    skos:closeMatch SOMA:Manipulating , SRDL:ObjectManipulationCapability .
+    skos:closeMatch SRDL:ObjectManipulationCapability ;
+    skos:relatedMatch SOMA:Manipulating .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#PositioningCapability
@@ -131,7 +155,7 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
     rdfs:subClassOf :ManipulationCapability ;
     rdfs:label "positioning capability"@en ;
     rdfs:comment "Bringing an object into a defined position and orientation. ISO 8373:2021, 3.1 names positioning next to locomotion and manipulation; SOMA places Positioning under Actuating."@en ;
-    skos:closeMatch SOMA:Positioning .
+    skos:relatedMatch SOMA:Positioning .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#ReasoningCapability
@@ -139,7 +163,8 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
     rdfs:subClassOf :RobotCapability ;
     rdfs:label "reasoning capability"@en ;
     rdfs:comment "The specification of a function that derives new information from information already present - classifying, planning, deciding. Corresponds to object classification via reasoning behavior in IEEE 1872.2, 4.4.9, and to robotProcessingPart in IEEE 1872 RPARTS. CSS admits this as a capability because it defines the effect of a capability as being in the physical OR VIRTUAL world. Note that this type is absent from groupings rooted in manufacturing, where planning happens outside the machine; it is needed for autonomous robots, which decide for themselves."@en ;
-    skos:closeMatch SOMA:DerivingInformation , SRDL:ComputationalCapability .
+    skos:closeMatch SRDL:ComputationalCapability ;
+    skos:relatedMatch SOMA:DerivingInformation .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#CommunicationCapability
@@ -147,7 +172,7 @@ skos:closeMatch rdf:type owl:AnnotationProperty ;
     rdfs:subClassOf :RobotCapability ;
     rdfs:label "communication capability"@en ;
     rdfs:comment "The specification of a function that exchanges information with another agent. Corresponds to robotCommunicatingPart in IEEE 1872 RPARTS. Notably absent from SRDL, which has no communication capability at all."@en ;
-    skos:closeMatch SOMA:CommunicationTask .
+    skos:relatedMatch SOMA:CommunicationTask .
 
 
 ###  http://www.w3id.org/hsu-aut/RobotCapabilities#HumanRobotCommunicationCapability
