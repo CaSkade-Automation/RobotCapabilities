@@ -1,8 +1,15 @@
 # RobotCapabilities — Basic Types of Capabilities of Autonomous Robots
 
 A small, deliberately shallow taxonomy of the basic kinds of capability an
-autonomous robot can provide, as subclasses of
-[`CSS:Capability`](https://github.com/CaSkade-Automation/CSS).
+autonomous robot can provide, as types of `RobotCapability`.
+
+The pattern **imports nothing**. An ontology that uses it places
+`RobotCapability` under its own notion of capability with a single axiom --
+for instance under
+[`CSS:Capability`](https://github.com/CaSkade-Automation/CSS), the
+"implementation-independent specification of a function" of the CSS reference
+model, which is what
+[CaSkBot](https://github.com/CaSkade-Automation/CaSkBot) does.
 
 It fills a gap: there is **no standard** that fixes a taxonomy of capabilities
 of autonomous robots. In manufacturing, capability types are commonly taken
@@ -16,7 +23,7 @@ accordingly rather than following the `IndustrialStandard-ODP-*` convention.
 ## The taxonomy
 
 ```
-CSS:Capability
+RobotCapability
  ├── PerceptionCapability
  │    └── ProprioceptionCapability
  ├── LocomotionCapability
@@ -28,10 +35,7 @@ CSS:Capability
       └── RobotRobotCommunicationCapability
 ```
 
-![](./pictures/RobotCapabilities_LWO.png)
-
-**Figure 1:** Class diagram of the pattern. Cream boxes are the types defined
-here, blue the class of CSS they specialise.
+*A class diagram of the pattern is to be added.*
 
 ## The cut is taken, not invented
 
@@ -111,7 +115,7 @@ Import a fixed version:
     owl:imports <http://www.w3id.org/hsu-aut/RobotCapabilities/1.0.0> .
 ```
 
-The pattern imports CSS and nothing else. The correspondences to SOMA, SRDL and
+The pattern imports nothing. The correspondences to SOMA, SRDL and
 IEEE 1872 CORAX are annotations and pull in no further ontology.
 
 ## Developed at
